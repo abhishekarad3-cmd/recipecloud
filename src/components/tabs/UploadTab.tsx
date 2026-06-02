@@ -135,7 +135,7 @@ export default function UploadTab() {
       setForm(INIT); setFile(null); setPreview(''); setNutrition(null);
       setStatus('ok'); setTimeout(() => setStatus('idle'), 5000);
     } catch {
-      setErrMsg('Upload failed. Please check your Supabase and Cloudinary configuration.'); setStatus('err');
+      setErrMsg('Upload failed. Please check your Supabase configuration.'); setStatus('err');
     }
     setLoading(false);
   };

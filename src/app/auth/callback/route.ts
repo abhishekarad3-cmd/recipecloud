@@ -9,6 +9,6 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // Redirect to home page on success
-  return NextResponse.redirect(requestUrl.origin);
+  // Use request-based fallback redirect in auth callback
+  return NextResponse.redirect(new URL('/', request.url));
 }
