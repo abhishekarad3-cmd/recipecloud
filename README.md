@@ -1,6 +1,6 @@
 # 🌿 RecipeCloud — Cloud Recipe App
 
-Full-stack recipe community: Next.js 15 + Firebase + Tailwind CSS.
+Full-stack recipe community: Next.js 15 + Supabase + Tailwind CSS.
 
 ---
 
@@ -23,10 +23,10 @@ src/
 │       ├── UploadSection.tsx    ← Image upload + points
 │       ├── ProfileSection.tsx   ← Profile + delete recipes
 │       └── LeaderboardSection.tsx
-├── context/AuthContext.tsx ← Global Google auth state
-├── lib/firebase.ts         ← Firebase init
+├── context/AuthContext.tsx ← Global Supabase auth state
+├── lib/supabase.ts         ← Supabase init
 └── services/
-    ├── recipes.ts          ← Firestore + Storage
+    ├── recipes.ts          ← Supabase database + Storage
     └── users.ts            ← User CRUD + leaderboard
 ```
 
@@ -34,31 +34,30 @@ src/
 
 ## ⚙️ Setup
 
-### 1. Create Firebase Project
-→ [console.firebase.google.com](https://console.firebase.google.com) → Add project
+### 1. Create Supabase Project
+→ [supabase.com](https://supabase.com) → New Project
 
 ### 2. Enable Services
-- **Authentication** → Sign-in providers → Enable **Google**
-- **Firestore** → Create database → Production mode
-- **Storage** → Get started → Production mode
+- **Authentication** → Providers → Enable **Google**
+- **Database** → Create tables as defined in `SETUP.md`
+- **Storage** → Create `recipe-images` bucket (Public)
 
 ### 3. Get Config Keys
-Project Settings → Your apps → Web → copy `firebaseConfig`
+Project Settings → API → copy `URL` and `anon public` key
 
 ### 4. Add Environment Variables
 ```bash
-cp .env.local.example .env.local
-# Fill in your Firebase keys
+cp .env.example .env.local
+# Fill in your Supabase keys
 ```
 
-### 5. Apply Security Rules
-- Firestore: paste `firestore.rules` → Publish
-- Storage: paste `storage.rules` → Publish
+### 5. Apply Security Rules (RLS)
+Follow the policies outlined in `SETUP.md` for `users` and `recipes` tables.
 
 ### 6. Run
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 # → http://localhost:4028
 ```
 

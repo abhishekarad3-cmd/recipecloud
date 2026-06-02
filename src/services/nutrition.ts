@@ -48,6 +48,8 @@ Return this exact JSON structure (numbers only, no units in number fields):
 }`;
 
   try {
+    throw new Error('Nutrition API temporarily disabled until moved server-side');
+    /*
     const apiKey = process.env.GEMINI_API_KEY;
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -57,13 +59,18 @@ Return this exact JSON structure (numbers only, no units in number fields):
         generationConfig: { response_mime_type: "application/json" }
       }),
     });
+    */
 
+    // The following code is unreachable but kept for future server-side migration reference
+    /*
     if (!res.ok) throw new Error(`API ${res.status}`);
     const data = await res.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
     // Strip any accidental markdown fences
     const clean = text.replace(/```json|```/gi, '').trim();
     return JSON.parse(clean) as NutritionData;
+    */
+    return buildFallback(ingredients, recipeName);
   } catch (err) {
     console.error('Nutrition analysis failed:', err);
     // Fallback: estimated values

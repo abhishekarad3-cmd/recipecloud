@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, Sparkles, Users, Star, TrendingUp } from 'lucide-react';
 import { useLang } from '@/context/LangContext';
 import RecipeCard from '@/components/RecipeCard';
+import RecipeDetailModal from '@/components/RecipeDetailModal';
 import { Recipe, subscribeToRecipes } from '@/services/recipes';
 import { useAuth } from '@/context/AuthContext';
+import { AppUser } from '@/services/users';
 import type { TabId } from '@/app/page';
 
 const STATS = [
@@ -15,13 +17,14 @@ const STATS = [
   { icon: TrendingUp, label: 'This Week', value: '+124', color: 'text-[#2E7D32]' },
 ];
 
-interface Props { setTab: (t: TabId) => void; }
+interface Props { setTab: (t: TabId) => void; onViewUser?: (user: AppUser) => void; }
 
-export default function HomeTab({ setTab }: Props) {
+export default function HomeTab({ setTab, onViewUser }: Props) {
   const { user, signInWithGoogle } = useAuth();
   const { t } = useLang();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   useEffect(() => {
     const unsub = subscribeToRecipes(data => {
@@ -161,11 +164,15 @@ export default function HomeTab({ setTab }: Props) {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.map(r => (
-              <RecipeCard key={r.id} recipe={r} />
+              <RecipeCard key={r.id} recipe={r} onViewDetails={setSelectedRecipe} onViewUser={onViewUser} />
             ))}
           </div>
         )}
       </section>
+
+      {selectedRecipe && (
+        <RecipeDetailModal recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
+      )}
 
       {/* CATEGORIES */}
       <section className="anim-up d-2">

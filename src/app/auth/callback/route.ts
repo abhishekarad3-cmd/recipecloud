@@ -1,23 +1,14 @@
-import { createClient } from '@/utils/supabase/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/';
+export async function GET(request: Request) {
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get('code');
 
   if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host');
-      const proto = request.headers.get('x-forwarded-proto');
-      const host = forwardedHost || request.headers.get('host');
-      const redirectUrl = proto ? `${proto}://${host}${next}` : next;
-      return NextResponse.redirect(redirectUrl);
-    }
+    await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${request.nextUrl.origin}/auth-error`);
+  // Use request-based fallback redirect in auth callback
+  return NextResponse.redirect(new URL('/', request.url));
 }
