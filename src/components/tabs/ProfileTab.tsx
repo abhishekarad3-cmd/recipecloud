@@ -71,6 +71,7 @@ export default function ProfileTab() {
       if (avatarFile) {
         const formDataUpload = new FormData();
         formDataUpload.append('file', avatarFile);
+        formDataUpload.append('userId', user.id);
         const uploadRes = await fetch('/api/upload', {
           method: 'POST',
           body: formDataUpload,
